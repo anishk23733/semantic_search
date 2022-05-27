@@ -16,6 +16,8 @@ sentences = [s.replace('\n', ' ').replace('\t', ' ').strip() for s in tokenizer.
 print(">> Building search cache...")
 # embeddings = {sentence: torch.flatten(generate_text_embedding(sentence)) for sentence in sentences if len(sentence) < 70}
 embeddings = {sentence: generate_text_embedding(sentence).cpu().detach().numpy() for sentence in sentences if len(sentence) < 70}
+locations = {sentences[i]: i for i in range(len(sentences)) if len(sentences[i]) < 70}
+
 print(">> Completed.\n")
 
 # cos = torch.nn.CosineSimilarity(dim=0, eps=1e-6)
@@ -27,9 +29,10 @@ def search(query):
     get_dist = lambda sentence: spatial.distance.cosine(query_embedding.flatten(), embeddings[sentence].flatten())
     # get_dist = lambda sentence: np.linalg.norm(query_embedding - embeddings[sentence])
 
-    semantic_similarity = list(islice(sorted(embeddings, key=get_dist), 5))
+    closest_sentences = list(islice(sorted(embeddings, key=get_dist), 5))
+    closest_sentences = [f"{s} #{locations[s]}" for s in closest_sentences]
     print(f">> Search query: {query}")
-    print('> ' + "\n> ".join(semantic_similarity))
+    print('> ' + "\n> ".join(closest_sentences))
     print("\n")
 
 while True:
