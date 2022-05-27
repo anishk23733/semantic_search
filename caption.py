@@ -9,8 +9,8 @@ from PIL import Image
 from models.CLIPCap import ClipCaptionModel, generate_beam, generate2
 
 # @param ['COCO', 'Conceptual captions']
-pretrained_model = 'COCO'  
-# pretrained_model = 'Conceptual captions'
+# pretrained_model = 'COCO'  
+pretrained_model = 'Conceptual captions'
 
 model_path = '../weights/conceptual_weights.pt' if pretrained_model == 'Conceptual captions' else '../weights/coco_weights.pt'
 
